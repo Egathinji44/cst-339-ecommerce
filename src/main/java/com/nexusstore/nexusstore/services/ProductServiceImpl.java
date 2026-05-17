@@ -1,140 +1,105 @@
 package com.nexusstore.nexusstore.services;
 
 import com.nexusstore.nexusstore.models.ProductModel;
+import com.nexusstore.nexusstore.repositories.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
- * In-memory implementation of {@link ProductService}.
- * Stores products in a list for Milestone 3 (no database yet).
- * Will be refactored to use Spring Data JDBC in Milestone 4.
+ * Spring Data JDBC implementation of {@link ProductService}.
  *
- * Registered as a Spring Bean via {@code @Service} for IoC/DI.
+ * <p>Refactored for Milestone 4: replaces the in-memory {@code ArrayList}
+ * with a {@link ProductRepository} backed by MySQL via Spring Data JDBC.
+ * All CRUD operations are delegated to the repository's {@code CrudRepository}
+ * methods, keeping business logic cleanly separated from data access.
+ *
+ * <p>Registered as a Spring Bean via {@code @Service} for IoC/DI.
  */
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    /** In-memory product store (replaces database for M3). */
-    private final List<ProductModel> products = new ArrayList<>();
-
-    /** Auto-incrementing ID counter. */
-    private final AtomicInteger idCounter = new AtomicInteger(1);
+    /** Spring Data JDBC repository injected via constructor DI. */
+    private final ProductRepository productRepository;
 
     /**
-     * Initializes the service with sample products for demonstration.
+     * Constructor-based dependency injection of {@link ProductRepository}.
+     *
+     * @param productRepository the Spring Data JDBC product repository
      */
-    public ProductServiceImpl() {
-        products.add(new ProductModel(idCounter.getAndIncrement(),
-                "Samsung 65\" QLED TV",
-                "4K Ultra HD Smart TV with Quantum HDR and Alexa Built-in.",
-                899.99, 15, "Electronics",
-                "https://placehold.co/300x200/1a1a2e/ffffff?text=Samsung+TV"));
-
-        products.add(new ProductModel(idCounter.getAndIncrement(),
-                "Apple iPhone 15",
-                "6.1-inch Super Retina XDR display, 48MP camera, USB-C connector.",
-                799.99, 30, "Electronics",
-                "https://placehold.co/300x200/1a1a2e/ffffff?text=iPhone+15"));
-
-        products.add(new ProductModel(idCounter.getAndIncrement(),
-                "Nike Air Max 270",
-                "Lightweight running shoe with Max Air unit and breathable mesh upper.",
-                150.00, 50, "Apparel",
-                "https://placehold.co/300x200/2d6a4f/ffffff?text=Nike+Air+Max"));
-
-        products.add(new ProductModel(idCounter.getAndIncrement(),
-                "Levi's 501 Original Jeans",
-                "Classic straight fit jeans in 100% cotton denim. Iconic since 1873.",
-                69.99, 75, "Apparel",
-                "https://placehold.co/300x200/2d6a4f/ffffff?text=Levis+501"));
-
-        products.add(new ProductModel(idCounter.getAndIncrement(),
-                "Sony WH-1000XM5 Headphones",
-                "Industry-leading noise canceling wireless headphones with 30-hour battery.",
-                349.99, 20, "Accessories",
-                "https://placehold.co/300x200/6b4c93/ffffff?text=Sony+XM5"));
-
-        products.add(new ProductModel(idCounter.getAndIncrement(),
-                "Anker USB-C Charging Cable 6ft",
-                "Braided nylon USB-C to USB-C cable, supports 100W fast charging.",
-                19.99, 200, "Accessories",
-                "https://placehold.co/300x200/6b4c93/ffffff?text=Anker+Cable"));
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     /**
-     * Returns all products in the store.
+     * Returns all products stored in the database.
      *
      * @return list of all products
      */
     @Override
     public List<ProductModel> getAllProducts() {
-        return new ArrayList<>(products);
+        List<ProductModel> products = new ArrayList<>();
+        productRepository.findAll().forEach(products::add);
+        return products;
     }
 
     /**
-     * Returns products filtered by category (case-insensitive).
+     * Returns products filtered by category.
+     * Delegates to the derived query {@code findByCategory} in the repository.
      *
      * @param category the category to filter by
      * @return filtered list of products
      */
     @Override
     public List<ProductModel> getProductsByCategory(String category) {
-        return products.stream()
-                .filter(p -> p.getCategory().equalsIgnoreCase(category))
-                .collect(Collectors.toList());
+        return productRepository.findByCategory(category);
     }
 
     /**
-     * Finds a product by its unique ID.
+     * Finds a product by its unique database ID.
      *
-     * @param id the product ID
-     * @return the matching product or {@code null} if not found
+     * @param id the product's primary key
+     * @return the matching {@link ProductModel}, or {@code null} if not found
      */
     @Override
     public ProductModel getProductById(int id) {
-        return products.stream()
-                .filter(p -> p.getProductId() == id)
-                .findFirst()
-                .orElse(null);
+        return productRepository.findById(id).orElse(null);
     }
 
     /**
-     * Adds a new product, assigning it the next available ID.
+     * Persists a new product to the database.
+     * Spring Data JDBC detects a new record when {@code productId} is {@code null}
+     * and issues an INSERT; MySQL AUTO_INCREMENT assigns the ID.
      *
-     * @param product the product to add
+     * @param product the product to save (productId should be null)
      */
     @Override
     public void addProduct(ProductModel product) {
-        product.setProductId(idCounter.getAndIncrement());
-        products.add(product);
+        product.setProductId(null); // ensure INSERT, not UPDATE
+        productRepository.save(product);
     }
 
     /**
-     * Updates an existing product by replacing the matching entry.
+     * Updates an existing product in the database.
+     * Spring Data JDBC issues an UPDATE when {@code productId} is set.
      *
      * @param product the product with updated values (must have a valid ID)
      */
     @Override
     public void updateProduct(ProductModel product) {
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).getProductId() == product.getProductId()) {
-                products.set(i, product);
-                return;
-            }
-        }
+        productRepository.save(product);
     }
 
     /**
-     * Removes a product from the store by ID.
+     * Deletes a product by its database ID.
      *
      * @param id the ID of the product to delete
      */
     @Override
     public void deleteProduct(int id) {
-        products.removeIf(p -> p.getProductId() == id);
+        productRepository.deleteById(id);
     }
 }
