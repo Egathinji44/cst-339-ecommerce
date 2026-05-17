@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <div class="alert alert-success">
+            <h4>Welcome, <span th:text="${loggedInUser}"></span>!</h4>
+            <p>You have successfully logged in to NexusStore.</p>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-person fs-1"></i>
+                        <h5>My Profile</h5>
+                        <p>View and edit your profile information</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-cart fs-1"></i>
+                        <h5>My Orders</h5>
+                        <p>View your order history</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-heart fs-1"></i>
+                        <h5>Wishlist</h5>
+                        <p>Products you've saved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
