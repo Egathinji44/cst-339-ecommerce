@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -12,7 +11,7 @@
 	<groupId>com.nexusstore</groupId>
 	<artifactId>nexusstore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<!-- Milestone 4: explicit JAR packaging required by project spec -->
+	<!-- Milestone 5: explicit JAR packaging required by project spec -->
 	<packaging>jar</packaging>
 	<name>nexusstore</name>
 	<description>NexusStore - Enterprise E-Commerce Application (CST-339)</description>
@@ -22,10 +21,10 @@
 	</properties>
 
 	<dependencies>
-		<!-- Spring Data JDBC for CrudRepository-based persistence (Milestone 4) -->
+		<!-- Spring Data MongoDB for MongoRepository-based persistence (Milestone 5) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 
 		<!-- Thymeleaf view layer -->
@@ -54,13 +53,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- MySQL JDBC driver -->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -80,84 +72,3 @@
 	</build>
 
 </project>
-=======
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
-        <relativePath/>
-    </parent>
-    
-    <groupId>com.nexusstore</groupId>
-    <artifactId>nexusstore</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>nexusstore</name>
-    <description>NexusStore E-commerce Application</description>
-    
-    <properties>
-        <java.version>17</java.version>
-    </properties>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>nz.net.ultraq.thymeleaf</groupId>
-            <artifactId>thymeleaf-layout-dialect</artifactId>
-            <version>3.3.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>5.3.2</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.webjars.npm</groupId>
-            <artifactId>bootstrap-icons</artifactId>
-            <version>1.11.3</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator-core</artifactId>
-        </dependency>
-    </dependencies>
-    
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-</project>
->>>>>>> f473d766bae565d56ac39a298253d7d21d71d506

@@ -8,25 +8,20 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * Spring Data JDBC implementation of {@link UserService}.
- *
- * <p>Refactored for Milestone 4: replaces the in-memory {@code ArrayList}
- * with a {@link UserRepository} backed by MySQL via Spring Data JDBC.
- * Seed data (default admin account) is now handled by {@code data.sql}
- * rather than a constructor initializer.
+ * Spring Data MongoDB implementation of {@link UserService}.
  *
  * <p>Registered as a Spring Bean via {@code @Service} for IoC/DI.
  */
 @Service
 public class UserServiceImpl implements UserService {
 
-    /** Spring Data JDBC repository injected via constructor DI. */
+    /** Spring Data MongoDB repository injected via constructor DI. */
     private final UserRepository userRepository;
 
     /**
      * Constructor-based dependency injection of {@link UserRepository}.
      *
-     * @param userRepository the Spring Data JDBC user repository
+     * @param userRepository the Spring Data MongoDB user repository
      */
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -35,10 +30,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Registers a new user if the username is not already taken.
-     * The new user is always assigned the role {@code USER}.
-     * The default admin account is seeded via {@code data.sql}.
      *
-     * @param user the user to register (id should be null for new records)
+     * @param user the user to register
      * @return {@code true} if registration succeeded; {@code false} if username is taken
      */
     @Override
@@ -46,8 +39,8 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             return false;
         }
-        user.setId(null);       // ensure INSERT
-        user.setRole("USER");   // enforce non-admin registration
+        user.setId(null);
+        user.setRole("USER");
         userRepository.save(user);
         return true;
     }
@@ -56,7 +49,7 @@ public class UserServiceImpl implements UserService {
      * Authenticates a user by matching username and password against the database.
      *
      * @param username entered username
-     * @param password entered password (plain-text; hashing deferred to Milestone 6 Spring Security)
+     * @param password entered password
      * @return the matching {@link UserModel}, or {@code null} if credentials are invalid
      */
     @Override
