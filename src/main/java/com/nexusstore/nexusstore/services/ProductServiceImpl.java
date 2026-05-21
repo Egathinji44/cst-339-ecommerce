@@ -5,15 +5,14 @@ import com.nexusstore.nexusstore.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Spring Data JDBC implementation of {@link ProductService}.
+ * Spring Data MongoDB implementation of {@link ProductService}.
  *
- * <p>Refactored for Milestone 4: replaces the in-memory {@code ArrayList}
- * with a {@link ProductRepository} backed by MySQL via Spring Data JDBC.
- * All CRUD operations are delegated to the repository's {@code CrudRepository}
+ * <p>Milestone 5: replaces the Spring Data JDBC / MySQL persistence layer with
+ * {@link ProductRepository} backed by MongoDB via Spring Data MongoDB.
+ * All CRUD operations are delegated to the repository's {@code MongoRepository}
  * methods, keeping business logic cleanly separated from data access.
  *
  * <p>Registered as a Spring Bean via {@code @Service} for IoC/DI.
@@ -21,13 +20,13 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    /** Spring Data JDBC repository injected via constructor DI. */
+    /** Spring Data MongoDB repository injected via constructor DI. */
     private final ProductRepository productRepository;
 
     /**
      * Constructor-based dependency injection of {@link ProductRepository}.
      *
-     * @param productRepository the Spring Data JDBC product repository
+     * @param productRepository the Spring Data MongoDB product repository
      */
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
@@ -35,20 +34,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Returns all products stored in the database.
+     * Returns all products stored in the MongoDB collection.
      *
      * @return list of all products
      */
     @Override
     public List<ProductModel> getAllProducts() {
-        List<ProductModel> products = new ArrayList<>();
-        productRepository.findAll().forEach(products::add);
-        return products;
+        return productRepository.findAll();
     }
 
     /**
      * Returns products filtered by category.
-     * Delegates to the derived query {@code findByCategory} in the repository.
      *
      * @param category the category to filter by
      * @return filtered list of products
@@ -59,32 +55,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Finds a product by its unique database ID.
+     * Finds a product by its MongoDB ObjectId string.
      *
-     * @param id the product's primary key
+     * @param id the product's MongoDB document ID
      * @return the matching {@link ProductModel}, or {@code null} if not found
      */
     @Override
-    public ProductModel getProductById(int id) {
+    public ProductModel getProductById(String id) {
         return productRepository.findById(id).orElse(null);
     }
 
     /**
-     * Persists a new product to the database.
-     * Spring Data JDBC detects a new record when {@code productId} is {@code null}
-     * and issues an INSERT; MySQL AUTO_INCREMENT assigns the ID.
+     * Persists a new product to the MongoDB collection.
+     * Setting {@code productId} to {@code null} ensures MongoDB assigns a fresh ObjectId.
      *
      * @param product the product to save (productId should be null)
      */
     @Override
     public void addProduct(ProductModel product) {
-        product.setProductId(null); // ensure INSERT, not UPDATE
+        product.setProductId(null);
         productRepository.save(product);
     }
 
     /**
-     * Updates an existing product in the database.
-     * Spring Data JDBC issues an UPDATE when {@code productId} is set.
+     * Updates an existing product in the MongoDB collection.
      *
      * @param product the product with updated values (must have a valid ID)
      */
@@ -94,12 +88,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Deletes a product by its database ID.
+     * Deletes a product by its MongoDB ObjectId string.
      *
      * @param id the ID of the product to delete
      */
     @Override
-    public void deleteProduct(int id) {
+    public void deleteProduct(String id) {
         productRepository.deleteById(id);
+    }
+
+    /**
+     * Searches for products whose name contains the given keyword (case-insensitive).
+     *
+     * @param keyword the search term
+     * @return list of matching products
+     */
+    @Override
+    public List<ProductModel> searchProducts(String keyword) {
+        return productRepository.findByNameContainingIgnoreCase(keyword);
     }
 }

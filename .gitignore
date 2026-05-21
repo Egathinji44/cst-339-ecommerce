@@ -1,34 +1,60 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ── Compiled class files ──────────────────────────────────────────────────────
+*.class
 
-### STS ###
-.apt_generated
+# ── Build output ──────────────────────────────────────────────────────────────
+target/
+bin/
+
+# ── Maven wrapper ─────────────────────────────────────────────────────────────
+!.mvn/wrapper/maven-wrapper.jar
+
+# ── IDE files ─────────────────────────────────────────────────────────────────
+.settings/
 .classpath
-.factorypath
 .project
-.settings
+*.launch
+.factorypath
+.apt_generated
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# ── Spring Boot ───────────────────────────────────────────────────────────────
+HELP.md
+spring-shell.log
 
-### VS Code ###
+# ── OS files ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── VS Code ───────────────────────────────────────────────────────────────────
 .vscode/
-.claude/ 
+.claude/
+
+# ── Loose root-level old milestone files ──────────────────────────────────────
+/about.html
+/dashboard.html
+/form.html
+/index.html
+/layout.html
+/list.html
+/login.html
+/register.html
+/view.html
+/settings.json
+/HELP.md
+/mvnw
+/mvnw.cmd
+/maven-wrapper.properties
+/HomeController.java
+/LoginController.java
+/NexusstoreApplication.java
+/Product.java
+/ProductController.java
+/ProductService.java
+/RegistrationController.java
+/User.java
+/UserStorageService.java

@@ -27,10 +27,10 @@ public interface ProductService {
     /**
      * Finds a single product by its ID.
      *
-     * @param id the product ID
+     * @param id the product ID (MongoDB ObjectId string)
      * @return the matching {@link ProductModel}, or {@code null} if not found
      */
-    ProductModel getProductById(int id);
+    ProductModel getProductById(String id);
 
     /**
      * Adds a new product to the store.
@@ -49,7 +49,15 @@ public interface ProductService {
     /**
      * Deletes a product by its ID.
      *
-     * @param id the ID of the product to delete
+     * @param id the ID of the product to delete (MongoDB ObjectId string)
      */
-    void deleteProduct(int id);
+    void deleteProduct(String id);
+
+    /**
+     * Searches for products whose name contains the given keyword (case-insensitive).
+     *
+     * @param keyword the search term
+     * @return list of matching products
+     */
+    List<ProductModel> searchProducts(String keyword);
 }
