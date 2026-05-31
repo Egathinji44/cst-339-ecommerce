@@ -1,0 +1,56 @@
+<!-- src/main/resources/templates/error/500.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Server Error - NexusStore</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg mt-5">
+                <div class="card-body p-5">
+                    <!-- 500 Icon -->
+                    <div class="mb-4">
+                        <i class="fas fa-cogs text-danger" style="font-size: 80px;"></i>
+                    </div>
+                    
+                    <!-- Error Code -->
+                    <h1 class="display-1 fw-bold text-danger">500</h1>
+                    
+                    <!-- Error Title -->
+                    <h2 class="mb-3">Internal Server Error</h2>
+                    
+                    <!-- Error Message -->
+                    <p class="lead mb-4">
+                        Something went wrong on our end. We're working to fix it.
+                    </p>
+                    
+                    <!-- Suggestions -->
+                    <div class="alert alert-secondary text-start mb-4">
+                        <i class="fas fa-clock"></i> What you can do:
+                        <ul class="mt-2 mb-0">
+                            <li>Try refreshing the page in a few minutes</li>
+                            <li>Clear your browser cache</li>
+                            <li>Contact support if the problem persists</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="mt-4">
+                        <a th:href="@{/}" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                        <button onclick="location.reload()" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-sync-alt"></i> Retry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
