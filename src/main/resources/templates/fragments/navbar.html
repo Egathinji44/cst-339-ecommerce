@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
 <!--/* Reusable Navigation Bar Fragment */-->
@@ -36,9 +37,9 @@
                 </li>
             </ul>
 
-            <!-- Right links: show login/register if not logged in, else username + logout -->
+            <!-- Right links: show Login/Register when anonymous, username + Logout when authenticated -->
             <ul class="navbar-nav ms-auto">
-                <th:block th:if="${session.loggedInUser == null}">
+                <th:block sec:authorize="isAnonymous()">
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/login}">Login</a>
                     </li>
@@ -46,13 +47,13 @@
                         <a class="btn btn-outline-light btn-sm ms-2" th:href="@{/register}">Register</a>
                     </li>
                 </th:block>
-                <th:block th:if="${session.loggedInUser != null}">
+                <th:block sec:authorize="isAuthenticated()">
                     <li class="nav-item">
                         <span class="nav-link text-light">
-                            👤 <span th:text="${session.loggedInUser.firstName}">User</span>
+                            👤 <span sec:authentication="principal.firstName">User</span>
                         </span>
                     </li>
-                    <li class="nav-item" th:if="${session.loggedInUser.role == 'ADMIN'}">
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link" th:href="@{/products/new}">+ Add Product</a>
                     </li>
                     <li class="nav-item">

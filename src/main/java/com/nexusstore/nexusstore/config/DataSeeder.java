@@ -6,60 +6,54 @@ import com.nexusstore.nexusstore.repositories.ProductRepository;
 import com.nexusstore.nexusstore.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * Seed component that populates the MongoDB database with default data on startup.
- * Replaces the MySQL schema.sql and data.sql files from Milestone 4.
+ * Seeds MongoDB with default admin and sample products on startup.
  * Seeding is idempotent — only runs when collections are empty.
+ * Also migrates any existing plain-text passwords to BCrypt (M6).
  */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
-    /** Repository for user persistence operations. */
     private final UserRepository userRepository;
-
-    /** Repository for product persistence operations. */
     private final ProductRepository productRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Constructor-based dependency injection of repositories.
-     *
-     * @param userRepository    the Spring Data MongoDB user repository
-     * @param productRepository the Spring Data MongoDB product repository
-     */
     @Autowired
-    public DataSeeder(UserRepository userRepository, ProductRepository productRepository) {
+    public DataSeeder(UserRepository userRepository,
+                      ProductRepository productRepository,
+                      PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Seeds the database on application startup if collections are empty.
-     *
-     * @param args command-line arguments (not used)
-     */
     @Override
     public void run(String... args) {
         seedUsers();
         seedProducts();
     }
 
-    /**
-     * Inserts the default admin account if no users exist yet.
-     * Username: admin / Password: admin123
-     */
     private void seedUsers() {
         if (userRepository.count() == 0) {
             userRepository.save(new UserModel(null, "Admin", "User",
-                    "admin@nexusstore.com", "admin", "admin123", "ADMIN"));
+                    "admin@nexusstore.com", "admin",
+                    passwordEncoder.encode("admin123"), "ADMIN"));
             System.out.println("[DataSeeder] Admin account created.");
+        } else {
+            // M6 migration: upgrade any stored plain-text passwords to BCrypt
+            userRepository.findAll().forEach(user -> {
+                if (!user.getPassword().startsWith("$2a$")) {
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                    userRepository.save(user);
+                    System.out.println("[DataSeeder] Migrated password for: " + user.getUsername());
+                }
+            });
         }
     }
 
-    /**
-     * Inserts six sample products if no products exist yet.
-     */
     private void seedProducts() {
         if (productRepository.count() == 0) {
             productRepository.save(new ProductModel(null, "Samsung 65\" QLED TV",

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -65,8 +66,8 @@
                         <a th:href="@{/products}" class="btn btn-outline-secondary">
                             &larr; Back to Products
                         </a>
-                        <!-- Admin actions -->
-                        <th:block th:if="${session.loggedInUser != null and session.loggedInUser.role == 'ADMIN'}">
+                        <!-- Admin actions — shown only to ADMIN role via Spring Security -->
+                        <th:block sec:authorize="hasRole('ADMIN')">
                             <a th:href="@{/products/{id}/edit(id=${product.productId})}"
                                class="btn btn-warning">Edit Product</a>
                             <form th:action="@{/products/{id}/delete(id=${product.productId})}"

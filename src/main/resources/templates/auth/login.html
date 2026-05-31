@@ -17,14 +17,22 @@
                 <div class="card-body p-4">
                     <h3 class="card-title text-center mb-4">Sign In</h3>
 
-                    <!-- Success message after registration -->
+                    <!-- Post-registration success message -->
                     <div th:if="${param.registered}" class="alert alert-success">
                         Account created successfully! Please log in.
                     </div>
 
-                    <!-- Error message -->
-                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    <!-- Logout confirmation message -->
+                    <div th:if="${param.logout}" class="alert alert-info">
+                        You have been logged out successfully.
+                    </div>
 
+                    <!-- Spring Security sets ?error=true on bad credentials -->
+                    <div th:if="${param.error}" class="alert alert-danger">
+                        Invalid username or password. Please try again.
+                    </div>
+
+                    <!-- Spring Security handles POST /login; Thymeleaf injects CSRF automatically -->
                     <form th:action="@{/login}" method="post">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
@@ -48,7 +56,7 @@
                     </p>
                 </div>
             </div>
-            <!-- Hint for testing -->
+            <!-- Test credentials hint -->
             <div class="card mt-3 border-info">
                 <div class="card-body text-muted small">
                     <strong>Test Admin:</strong> username: <code>admin</code> / password: <code>admin123</code>
