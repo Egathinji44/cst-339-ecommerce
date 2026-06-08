@@ -1,48 +1,81 @@
+// src/main/java/com/nexusstore/service/ProductService.java
 package com.nexusstore.service;
 
+import com.nexusstore.dto.ProductDto;
 import com.nexusstore.model.Product;
-import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Service
-public class ProductService {
+/**
+ * Service interface for product management operations.
+ * 
+ * @author NexusStore Team
+ * @version 1.0
+ */
+public interface ProductService {
     
-    private final ConcurrentHashMap<Long, Product> productStore = new ConcurrentHashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    /**
+     * Create a new product.
+     * @param productDto the product data
+     * @return the created product
+     * @throws RuntimeException if SKU already exists
+     */
+    Product createProduct(ProductDto productDto);
     
+    /**
+     * Update an existing product.
+     * @param id the product ID
+     * @param productDto the updated product data
+     * @return the updated product
+     * @throws RuntimeException if product not found
+     */
+    Product updateProduct(Long id, ProductDto productDto);
     
-    public Product save(Product product) {
-        Long newId = idGenerator.getAndIncrement();
-        product.setId(newId);
-        productStore.put(newId, product);
-        return product;
-    }
+    /**
+     * Delete a product (soft delete).
+     * @param id the product ID
+     * @throws RuntimeException if product not found
+     */
+    void deleteProduct(Long id);
     
+    /**
+     * Find product by ID.
+     * @param id the product ID
+     * @return Optional containing the product
+     */
+    Optional<Product> findById(Long id);
     
-    public Optional<Product> findById(Long id) {
-        return Optional.ofNullable(productStore.get(id));
-    }
+    /**
+     * Find product by SKU.
+     * @param sku the SKU
+     * @return Optional containing the product
+     */
+    Optional<Product> findBySku(String sku);
     
+    /**
+     * Get all active products.
+     * @return list of all active products
+     */
+    List<Product> getAllProducts();
     
-    public List<Product> findAll() {
-        return new ArrayList<>(productStore.values());
-    }
+    /**
+     * Get products by category.
+     * @param category the category
+     * @return list of products in the category
+     */
+    List<Product> getProductsByCategory(String category);
     
+    /**
+     * Search products by keyword.
+     * @param keyword the search keyword
+     * @return list of matching products
+     */
+    List<Product> searchProducts(String keyword);
     
-    public Product update(Product product) {
-        if (productStore.containsKey(product.getId())) {
-            productStore.put(product.getId(), product);
-            return product;
-        }
-        return null;
-    }
-    
-    
-    public boolean deleteById(Long id) {
-        return productStore.remove(id) != null;
-    }
+    /**
+     * Check if SKU is available.
+     * @param sku the SKU to check
+     * @return true if available
+     */
+    boolean isSkuAvailable(String sku);
 }
