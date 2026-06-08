@@ -1,47 +1,40 @@
 package com.nexusstore.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
-/**
- * User entity representing application users.
- * 
- * @author NexusStore Team
- * @version 1.0
-    */
-@Table("users")
 public class User {
     
-    @Id
     private Long id;
+    
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
+    
+    @NotBlank(message = "Email is required")
+    @Email(message = "Please provide a valid email address")
     private String email;
+    
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
+    
+    @NotBlank(message = "First name is required")
     private String firstName;
+    
+    @NotBlank(message = "Last name is required")
     private String lastName;
-    private String role;
-    private boolean enabled;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     
+    private String phoneNumber;
+    private LocalDateTime registrationDate;
+    private LocalDateTime lastLoginDate;
     
-    public User() {}
-    
-    public User(String username, String email, String password, 
-                String firstName, String lastName) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = "ROLE_USER";
-        this.enabled = true;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+    // Constructor
+    public User() {
+        this.registrationDate = LocalDateTime.now();
     }
     
-    
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -60,15 +53,16 @@ public class User {
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
     
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public LocalDateTime getRegistrationDate() { return registrationDate; }
+    public void setRegistrationDate(LocalDateTime registrationDate) { this.registrationDate = registrationDate; }
     
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getLastLoginDate() { return lastLoginDate; }
+    public void setLastLoginDate(LocalDateTime lastLoginDate) { this.lastLoginDate = lastLoginDate; }
     
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }
