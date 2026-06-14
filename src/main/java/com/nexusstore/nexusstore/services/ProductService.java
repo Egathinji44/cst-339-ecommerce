@@ -60,4 +60,14 @@ public interface ProductService {
      * @return list of matching products
      */
     List<ProductModel> searchProducts(String keyword);
+
+    /**
+     * Decreases the available stock quantity for a product, typically called
+     * when an order is placed (Milestone 8: Shopping Cart &amp; Ordering module).
+     * Stock will not be reduced below zero.
+     *
+     * @param id       the ID of the product whose stock should be decreased
+     * @param quantity the number of units to subtract from current stock
+     */
+    void decreaseStock(String id, int quantity);
 }

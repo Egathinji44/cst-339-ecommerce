@@ -62,10 +62,22 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 flex-wrap">
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
                         <a th:href="@{/products}" class="btn btn-outline-secondary">
                             &larr; Back to Products
                         </a>
+
+                        <!-- Add to Cart — Milestone 8 -->
+                        <form sec:authorize="isAuthenticated()" th:if="${product.stockQuantity > 0}"
+                              th:action="@{/cart/add}" method="post" class="d-flex gap-2 align-items-center">
+                            <input type="hidden" name="productId" th:value="${product.productId}">
+                            <input type="number" name="quantity" class="form-control" style="width: 90px;"
+                                   value="1" min="1" th:max="${product.stockQuantity}">
+                            <button type="submit" class="btn btn-success">Add to Cart</button>
+                        </form>
+                        <span sec:authorize="isAuthenticated()" th:unless="${product.stockQuantity > 0}"
+                              class="badge bg-danger fs-6">Out of Stock</span>
+
                         <!-- Admin actions — shown only to ADMIN role via Spring Security -->
                         <th:block sec:authorize="hasRole('ADMIN')">
                             <a th:href="@{/products/{id}/edit(id=${product.productId})}"

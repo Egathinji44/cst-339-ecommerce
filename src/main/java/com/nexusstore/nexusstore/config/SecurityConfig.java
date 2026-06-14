@@ -98,6 +98,10 @@ public class SecurityConfig {
     /**
      * Secures all browser-facing routes with form-based login (Milestone 6 behaviour).
      *
+     * <p>Milestone 8: Adds a dedicated rule restricting {@code /admin/**}
+     * (the Admin Order Management screen) to users with the {@code ADMIN}
+     * role.</p>
+     *
      * @param http the HttpSecurity to configure
      * @return the built SecurityFilterChain for the web UI
      * @throws Exception if configuration fails
@@ -109,6 +113,7 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

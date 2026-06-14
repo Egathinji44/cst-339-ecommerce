@@ -37,8 +37,24 @@
                 </li>
             </ul>
 
-            <!-- Right links: show Login/Register when anonymous, username + Logout when authenticated -->
-            <ul class="navbar-nav ms-auto">
+            <!-- Right links: show Login/Register when anonymous, cart/orders + username + Logout when authenticated -->
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <!-- Cart and order links — Milestone 8 -->
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/cart}">
+                            🛒 Cart
+                            <span class="badge bg-light text-dark"
+                                  th:text="${@cartServiceImpl.getItemCount(#authentication.name)}">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/orders}">My Orders</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin/orders}">Manage Orders</a>
+                    </li>
+                </th:block>
                 <th:block sec:authorize="isAnonymous()">
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/login}">Login</a>

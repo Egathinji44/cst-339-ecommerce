@@ -107,4 +107,23 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductModel> searchProducts(String keyword) {
         return productRepository.findByNameContainingIgnoreCase(keyword);
     }
+
+    /**
+     * Decreases the available stock quantity for a product by the given amount,
+     * clamping at zero so stock never goes negative.
+     *
+     * @param id       the ID of the product whose stock should be decreased
+     * @param quantity the number of units to subtract from current stock
+     */
+    @Override
+    public void decreaseStock(String id, int quantity) {
+        ProductModel product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            return;
+        }
+        int currentStock = (product.getStockQuantity() != null) ? product.getStockQuantity() : 0;
+        int updatedStock = currentStock - quantity;
+        product.setStockQuantity(Math.max(updatedStock, 0));
+        productRepository.save(product);
+    }
 }

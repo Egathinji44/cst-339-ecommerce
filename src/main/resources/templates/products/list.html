@@ -79,6 +79,16 @@
                            th:href="@{/products/{id}/edit(id=${product.productId})}"
                            class="btn btn-outline-secondary btn-sm">Edit</a>
                     </div>
+
+                    <!-- Add to Cart — Milestone 8 -->
+                    <form sec:authorize="isAuthenticated()" th:if="${product.stockQuantity > 0}"
+                          th:action="@{/cart/add}" method="post" class="mt-2">
+                        <input type="hidden" name="productId" th:value="${product.productId}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-success btn-sm w-100">Add to Cart</button>
+                    </form>
+                    <span sec:authorize="isAuthenticated()" th:unless="${product.stockQuantity > 0}"
+                          class="badge bg-danger mt-2">Out of Stock</span>
                 </div>
             </div>
         </div>

@@ -19,7 +19,8 @@ import java.util.List;
  * </ul>
  *
  * <p>Both endpoints are secured via HTTP Basic Authentication backed by the
- * MongoDB {@code users} collection (configured in {@link SecurityConfig}).
+ * MongoDB {@code users} collection (configured in
+ * {@link com.nexusstore.nexusstore.config.SecurityConfig}).
  * Any valid user (USER or ADMIN role) may call these endpoints.
  */
 @RestController
